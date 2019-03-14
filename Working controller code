@@ -42,9 +42,9 @@ def MotorInit():
 def MotorControl(x,y):
     print(str(x) + " " + str(y))
     x = x
-    y = y*100
-    #BP.set_motor_power(BP.PORT_A, y)
+    y = -y*100
     BP.set_motor_power(PORT_MOTOR_LEFT, y)
+    BP.set_motor_power(PORT_MOTOR_RIGHT, y)
     
     
 
