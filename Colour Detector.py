@@ -24,13 +24,13 @@ def Capture(path, delay):
 
 def getPixelColour(R,G,B):
     #3 bools in
-    if(R && !G && !B):
+    if(R & (False==G) & (False==B)):
         return 0
-    if(!R && G && !B):
+    if((False==R) & G & (False==B)):
         return 1
-    if(!R && !G && B):
+    if((False==R) & (False==G) & B):
         return 2
-    if(R && G && !B):
+    if(R & G & (False==B)):
         return 3
 
     #if no colour found, return "Background"
@@ -49,16 +49,16 @@ def PixelToColour(pixel):
     
 def Get_Max(Array):
     #Iterate through the array to get index of largest value
-    int ind = 0
-    int max = 0
+    ind = 0
+    maxVal = 0
     for z in range(0,5):
-        if Array[z,0] > max:
-            max = Array[z,0]
+        if Array[z,0] > maxVal:
+            maxVal = Array[z,0]
             ind = z
     return ind
     
 
-def Analyse(path,size)
+def Analyse(path,size):
     #load photo
     arr = misc.imread(path) # 2592x1944
     picX = 2592
