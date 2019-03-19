@@ -22,6 +22,7 @@ def Capture(path, delay):
     camera.start_preview()
     sleep(delay)
     camera.capture(path)
+    camera.stop_preview()
 
 def getPixelColour(R,G,B):
     #3 bools in
