@@ -11,6 +11,7 @@ from time import sleep
 from scipy import misc
 
 camera = PiCamera()
+path = '/home/pi/Desktop/image.jpg'
 
 def Test():    
     camera.start_preview()
@@ -80,9 +81,11 @@ def Analyse(path,size):
 
 def Get_Colour(path, delay):
     Capture(path, delay)
-    Analyse(path)
+    print(Analyse(path,100))
+
+Get_Colour(path,3)
     
     
 
 
-path = '/home/pi/Desktop/image.jpg'
+
