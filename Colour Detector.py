@@ -84,7 +84,9 @@ def Get_Colour(path, delay):
     Capture(path, delay)
     print(Analyse(path,100))
 
-Get_Colour(path,3)
+while True:
+    Get_Colour(path,3)
+    sleep(3)
     
     
 
