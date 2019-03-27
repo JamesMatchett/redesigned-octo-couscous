@@ -1,23 +1,33 @@
-import time
+from time import sleep
 import brickpi3
+import pygame
 
 BP = brickpi3.BrickPi3()
 
 BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
 BP.set_sensor_type(BP.PORT_3, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
-PORT_MOTOR_LEFT = BP.PORT.A
-PORT_MOTOR_RIGHT = BP.PORT.B
+PORT_MOTOR_LEFT = BP.PORT_A
+PORT_MOTOR_RIGHT = BP.PORT_B
 minDist = 9
 criticalDist = 6
 maxDist = 18
+
+def initSens():
+    print("Configuring")
+    BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
+    BP.set_sensor_type(BP.PORT_3, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
+    sleep(2)
+    
 
 def waitForButton():
     print("Waiting")
     #while Notpressed
 
 def stillGo():
-    if(joystick.get_button(1) == 1):
-        return false
+    for event in pygame.event.get(): # User did something
+            if event.type == pygame.JOYBUTTONDOWN:
+                print("Joystick button pressed, stopping!.")
+                return False
     
     return True
 
@@ -29,11 +39,11 @@ def getDist(side):
             sleep(0.02)
     if(side == "L"):
         for x in range(0,5):
-            total = total + BP.get_sensor(BP.PORT_3)
+            total = total + BP.get_sensor(BP.PORT_1)
             sleep(0.02)
 
-     total = total/5
-     return total
+    total = total/5
+    return total
 
 
 def steer(side, proximity):
@@ -58,7 +68,7 @@ def steer(side, proximity):
     
 
 def GoRobotGo():
-    sleep(2)
+    print("Going!")
     go = True
     BP.set_motor_power(PORT_MOTOR_LEFT, 100)
     BP.set_motor_power(PORT_MOTOR_RIGHT, 100)
@@ -68,7 +78,7 @@ def GoRobotGo():
         right = getDist("R")
         if (left < minDist or right > maxDist):
             steer("R",left)
-        else if(right < minDist or left > maxDist):
+        elif(right < minDist or left > maxDist):
             steer("L",right)
         else:
             BP.set_motor_power(PORT_MOTOR_LEFT, 100)
@@ -97,4 +107,3 @@ def waitForStart():
 while True:
     waitForStart()
     GoRobotGo()
-    
