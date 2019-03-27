@@ -9,20 +9,13 @@ import brickpi3
 import pygame
 
 
-BP = brickpi3.BrickPi3()
 
-BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
-PORT_MOTOR_LEFT = BP.PORT.A
-PORT_MOTOR_RIGHT = BP.PORT.B
 
-colours = ["Red", "Blue", "Yellow", "Green"]
-#NESW array
-posArray = ["","","",""]
-boopDist = 5
-
-colourPointer = 0
-heading = -45
-
+def initSens():
+    print("Configuring")
+    BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
+    sleep(2)
+    
 
 def speed(lval, rval):
     BP.set_motor_power(PORT_MOTOR_LEFT, lval)
@@ -38,9 +31,10 @@ def getMotVal(mot):
 
 def turn(bearing):
     #bearing is where we want to turn to
-    degToTurn = bearing - heading
+    degToTurn = bearing - hdg
     #if deg positive, turning right
     #else turning left
+    print("Turning "+str(degToTurn)+" Degrees")
     if degToTurn != 0:
         lVal= BP.get_motor_encoder(BP.PORT_A)
         RVal= BP.get_motor_encoder(BP.PORT_B)
@@ -61,15 +55,15 @@ def turn(bearing):
             speed(0,0)
             
     
-    heading = bearing
+    return bearing
     #trBR
 
 def goToNextColour():
     if(colours[colourPointer] in posArray):
-        turn((posArray.index(colours[colourPointer]))*90)
+        hdg = turn((posArray.index(colours[colourPointer]))*90)
         boop()
         colorPointer = colorPointer + 1
-    goToNextColour()
+        goToNextColour()
 
 def getColour(bearing):
     #work out to turn to
@@ -84,11 +78,11 @@ def getColour(bearing):
 def getFDist():
     total = 0
     for x in range(0,5):
-        total = total + BP.get_sensor(BP.PORT_1å)
+        total = total + BP.get_sensor(BP.PORT_1)
         sleep(0.02)
 
-     total = total/5
-     return total
+    total = total/5
+    return total
     
     
     
@@ -105,7 +99,6 @@ def boop():
     speed(0,0)
 
 def waitForStart():
-    def waitForGo():
     initSens()
     print("Ready")
     pygame.init()
@@ -120,14 +113,29 @@ def waitForStart():
             if event.type == pygame.JOYBUTTONDOWN:
                 print("Joystick button pressed.")
                 wait = False
+
+def go():
+    print("Going")
+    getColour(0)
+    getColour(90)
+    getColour(180)
+    getColour(270)
     
 
+BP = brickpi3.BrickPi3()
+
+BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
+PORT_MOTOR_LEFT = BP.PORT_A
+PORT_MOTOR_RIGHT = BP.PORT_B
+
+colours = ["Red", "Blue", "Yellow", "Green"]
+#NESW array
+posArray = ["","","",""]
+boopDist = 5
+
+colourPointer = 0
+hdg = -45
+
+
 waitForStart()
-getColour(0)
-getColour(90)
-getColour(180)
-getColour(270)
-
-
-
-
+go()
