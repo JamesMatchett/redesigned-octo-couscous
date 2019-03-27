@@ -7,6 +7,9 @@
 from time import sleep
 import brickpi3
 import pygame
+from picamera import PiCamera
+from scipy import misc
+from PIL import Image
 
 #Table:
 #0 -> Red
@@ -21,7 +24,7 @@ from time import sleep
 from scipy import misc
 from PIL import Image
 
-#camera = PiCamera()
+camera = PiCamera()
 path = '/home/pi/Desktop/image.jpg'
 
 def Test():    
@@ -177,7 +180,7 @@ def getColour(bearing):
     turn(bearing)
     #read colour
     colour = camColour("/home/pi/image.jpg",2,10)
-    posArray[bearing/90] = colour
+    posArray[int(bearing/90)] = colour
     goToNextColour()
     #Try to go to the next colour, if we know where it is
     #Return colour
@@ -223,7 +226,7 @@ def waitForStart():
 
 def go():
     print("Going")
-    getColour(0)
+    getColour(-45)
     getColour(90)
     getColour(180)
     getColour(270)
