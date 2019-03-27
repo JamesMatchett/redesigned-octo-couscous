@@ -23,9 +23,10 @@ boopDist = 5
 tTime = 0.75
 
 def initSens():
+    print("Configuring")
     BP.set_sensor_type(BP.PORT_3, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
     BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
-    sleep(5)
+    sleep(2)
     
 
 ##Array list for turn directions
@@ -70,7 +71,7 @@ def getDist(side):
     total = 0
     if(side == "F"):
         for x in range(0,5):
-            total = total + BP.get_sensor(BP.PORT_3)
+            total = total + BP.get_sensor(BP.PORT_1)
             sleep(0.02)
     if(side == "R"):
         for x in range(0,5):
