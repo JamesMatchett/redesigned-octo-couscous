@@ -226,7 +226,7 @@ def waitForStart():
 
 def go():
     print("Going")
-    getColour(-45)
+    getColour(0)
     getColour(90)
     getColour(180)
     getColour(270)
