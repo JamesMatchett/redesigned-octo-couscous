@@ -176,7 +176,7 @@ def getColour(bearing):
     #work out to turn to
     turn(bearing)
     #read colour
-    colour = camColour("/home/pi/image.jpg",2)
+    colour = camColour("/home/pi/image.jpg",2,10)
     posArray[bearing/90] = colour
     goToNextColour()
     #Try to go to the next colour, if we know where it is
