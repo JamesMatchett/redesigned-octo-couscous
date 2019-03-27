@@ -75,16 +75,26 @@ def GoRobotGo():
             BP.set_motor_power(PORT_MOTOR_RIGHT, 100)
     sleep(2)
             
-def waitForGo():
+def waitForStart():
+    initSens()
+    print("Ready")
+    pygame.init()
+    clock = pygame.time.Clock()
+    pygame.joystick.init()
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
     wait = True
+    print("Waiting")
     while wait:
-        if(joystick.get_button(1) == 1):
-            wait = False
+        for event in pygame.event.get(): # User did something
+            if event.type == pygame.JOYBUTTONDOWN:
+                print("Joystick button pressed.")
+                wait = False
             
         
 
 #wait for input
 while True:
-    waitForGo()
+    waitForStart()
     GoRobotGo()
     
