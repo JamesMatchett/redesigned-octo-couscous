@@ -3,8 +3,10 @@
 #turn
 #repeat
 
-import time
+from time import sleep
 import brickpi3
+import pygame
+
 
 BP = brickpi3.BrickPi3()
 
@@ -13,12 +15,18 @@ BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
 
 #Right sensor
 BP.set_sensor_type(BP.PORT_3, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
-PORT_MOTOR_LEFT = BP.PORT.A
-PORT_MOTOR_RIGHT = BP.PORT.B
+PORT_MOTOR_LEFT = BP.PORT_A
+PORT_MOTOR_RIGHT = BP.PORT_B
 
 idealDist = 5
 boopDist = 5
 tTime = 0.75
+
+def initSens():
+    BP.set_sensor_type(BP.PORT_3, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
+    BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
+    sleep(5)
+    
 
 ##Array list for turn directions
 
@@ -69,8 +77,8 @@ def getDist(side):
             total = total + BP.get_sensor(BP.PORT_3)
             sleep(0.02)
 
-     total = total/5
-     return total
+    total = total/5
+    return total
 
 def forward(speed):
     BP.set_motor_power(PORT_MOTOR_LEFT, speed)
@@ -93,6 +101,7 @@ def steer(side, proximity):
         BP.set_motor_power(PORT_MOTOR_RIGHT, 100*valOfSteer)
 
 def first():
+    print("In 1")
     forward(100)
     while getDist("F") > boopDist:
         #slight steering in each direction
@@ -104,6 +113,7 @@ def first():
     forward(0)
 
 def second():
+    print("In 2")
     turn90("L")
     forward(100)
     while getDist("F") > boopDist:
@@ -116,6 +126,7 @@ def second():
     forward(0)
 
 def third():
+    print("In 3")
     turn90("L")
     forward(100)
     count = 0
@@ -131,6 +142,7 @@ def third():
     forward(0)
 
 def fourth():
+    print("In 4")
     turn90("R")
     forward(100)
     #No steering as wall on right too far away
@@ -140,6 +152,7 @@ def fourth():
     forward(0)
 
 def fifth():
+    print("In 5")
     turn90("R")
     forward(100)
     #another awkard half wall
@@ -154,6 +167,7 @@ def fifth():
 
 
 def sixth():
+    print("In 6")
     turn90("L")
     forward(100)
     #we got walls again!
@@ -165,6 +179,7 @@ def sixth():
     forward(0)
 
 def seventh():
+    print("In 7")
     turn90("L")
     forward(100)
     while getDist("F") > boopDist:
@@ -176,9 +191,10 @@ def seventh():
 
 
 def eighth():
+    print("In 8")
     turn90("L")
     forward(100)
-     while getDist("F") > boopDist:
+    while getDist("F") > boopDist:
         if (getDist("R") > idealDist):
             steer("R", getDist("R"))
         else:
@@ -196,10 +212,20 @@ def eighth():
     
 
 def waitForGo():
+    initSens()
+    print("Ready")
+    pygame.init()
+    clock = pygame.time.Clock()
+    pygame.joystick.init()
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
     wait = True
+    print("Waiting")
     while wait:
-        if(joystick.get_button(1) == 1):
-            wait = False
+        for event in pygame.event.get(): # User did something
+            if event.type == pygame.JOYBUTTONDOWN:
+                print("Joystick button pressed.")
+                wait = False
 
 def GoRobotGo():
     first()
