@@ -1,4 +1,4 @@
-#hubble2
+#canyons of mars
 #drive to booping distance
 #turn
 #repeat
@@ -113,10 +113,13 @@ def waitForGo():
                 wait = False
 
 def GoRobotGo():
-    count = 0
-    while count < 4:
-        fwdBack()
-        turn90()
+    turn(-45)
+    fwdBack()
+    turn(-90)
+    fwdBack()
+    turn(180)
+    fwdBack()
+    turn(90)
         
    
     
