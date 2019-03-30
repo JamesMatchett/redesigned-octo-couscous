@@ -1,0 +1,117 @@
+#canyons of mars
+#drive to booping distance
+#turn
+#repeat
+
+from time import sleep
+import brickpi3
+import pygame
+
+velocity = 20
+BP = brickpi3.BrickPi3()
+
+##Front sensor
+BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
+
+#Right sensor
+BP.set_sensor_type(BP.PORT_3, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
+PORT_MOTOR_LEFT = BP.PORT_A
+PORT_MOTOR_RIGHT = BP.PORT_B
+
+idealDist = 5
+boopDist = 5
+tTime = 0.75
+
+def initSens():
+    BP.set_motor_power(PORT_MOTOR_LEFT, 0)
+    BP.set_motor_power(PORT_MOTOR_RIGHT, 0)
+    print("Configuring")
+    BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
+    sleep(2)
+
+
+def getDist():
+    total = 0
+
+    for x in range(0,5):
+        total = total + BP.get_sensor(BP.PORT_1)
+        sleep(0.02)
+
+    total = total/5
+    return total
+    
+
+def getMotVal(mot):
+    if mot == "R":
+        return BP.get_motor_encoder(BP.PORT_B)
+    if mot == "L":
+        return BP.get_motor_encoder(BP.PORT_A)   
+
+def turn90():
+    leftValOrig = getMotVal("L")
+    rightValOrig = getMotVal("R")
+    leftValTarg = legtValOrig + 90
+    rightValTarg = rightValOrig + 90
+    while (leftValTarg > getMotVal("L") and rightValTarg > getMotVal("R"):
+           speed(velocity, -velocity)
+    speed(0,0)
+           
+    
+    
+
+def speed(vell, velr):
+    BP.set_motor_power(PORT_MOTOR_LEFT, vell)
+    BP.set_motor_power(PORT_MOTOR_RIGHT, velr)
+        
+def fwdBack():
+    #Forward, save current encoder vals
+    leftValOrig = getMotVal("L")
+    rightValOrig = getMotVal("R")
+    while (getDist() > 7):
+        speed(velocity,velocity)
+    speed(0,0)
+    #reverse
+    while (getMotVal("R") > rightValOrig and getMotVal("L") > leftValOrig):
+        speed(-velocity, -velocity)
+    speed(0,0)
+        
+    
+    
+        
+    
+
+    
+    
+    
+            
+        
+    
+
+def waitForGo():
+    initSens()
+    print("Ready")
+    pygame.init()
+    clock = pygame.time.Clock()
+    pygame.joystick.init()
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
+    wait = True
+    print("Waiting")
+    while wait:
+        for event in pygame.event.get(): # User did something
+            if event.type == pygame.JOYBUTTONDOWN:
+                print("Joystick button pressed.")
+                wait = False
+
+def GoRobotGo():
+    count = 0
+    while count < 4:
+        fwdBack()
+        turn90()
+        
+   
+    
+
+while True:
+    waitForGo()
+    GoRobotGo()
