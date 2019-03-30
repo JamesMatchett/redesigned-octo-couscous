@@ -1,18 +1,23 @@
 from time import sleep
 import brickpi3
 import pygame
+import time
 
 BP = brickpi3.BrickPi3()
 
+SPEED = -25
 BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
 BP.set_sensor_type(BP.PORT_3, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
 PORT_MOTOR_LEFT = BP.PORT_A
 PORT_MOTOR_RIGHT = BP.PORT_B
-minDist = 9
-criticalDist = 6
-maxDist = 18
+minDist = 20
+criticalDist = 4
+maxDist = 30
+since_last_turn = 0
 
 def initSens():
+    BP.set_motor_power(PORT_MOTOR_LEFT, 0)
+    BP.set_motor_power(PORT_MOTOR_RIGHT, 0)
     print("Configuring")
     BP.set_sensor_type(BP.PORT_1, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
     BP.set_sensor_type(BP.PORT_3, BP.SENSOR_TYPE.EV3_ULTRASONIC_CM)
@@ -36,28 +41,38 @@ def getDist(side):
     if(side == "R"):
         for x in range(0,5):
             total = total + BP.get_sensor(BP.PORT_3)
-            sleep(0.02)
+            sleep(0.01)
     if(side == "L"):
         for x in range(0,5):
             total = total + BP.get_sensor(BP.PORT_1)
-            sleep(0.02)
+            sleep(0.01)
 
     total = total/5
-    return total
+    return round(total)
 
 
 def steer(side, proximity):
-    #if at minDist or below, 50% steering
-    #if at midpoint between MaxDist & minDist, 0 % steering
-    midpoint = maxDist - ((maxDist - minDist)/2)
-    maxDiff = midpoint - criticalDist
-    actDiff = proximity - criticalDist
-    valOfSteer = (actDiff/maxDiff)
-    if(side == "R"):
-        BP.set_motor_power(PORT_MOTOR_LEFT, 100*valOfSteer)
-    if(side == "L"):
-        BP.set_motor_power(PORT_MOTOR_RIGHT, 100*valOfSteer)
+    if(proximity < 5):
+        BP.set_motor_power(PORT_MOTOR_LEFT, 0)
+        BP.set_motor_power(PORT_MOTOR_RIGHT, 0)
+        if(side == "R"):
+            BP.set_motor_power(PORT_MOTOR_LEFT, -100)
+            BP.set_motor_power(PORT_MOTOR_RIGHT, 100)
+            sleep(0.25)
+            BP.set_motor_power(PORT_MOTOR_LEFT, SPEED)
+            BP.set_motor_power(PORT_MOTOR_RIGHT, SPEED)
 
+        if(side == "L"):
+            BP.set_motor_power(PORT_MOTOR_LEFT, 100)
+            BP.set_motor_power(PORT_MOTOR_RIGHT, -100)
+            sleep(0.25)
+            BP.set_motor_power(PORT_MOTOR_LEFT, SPEED)
+            BP.set_motor_power(PORT_MOTOR_RIGHT, SPEED)
+
+            
+            
+            
+            
         #we pass in 8cm should steer a little
 
         #we pass in 3cm should steer a lot
@@ -70,19 +85,22 @@ def steer(side, proximity):
 def GoRobotGo():
     print("Going!")
     go = True
-    BP.set_motor_power(PORT_MOTOR_LEFT, 100)
-    BP.set_motor_power(PORT_MOTOR_RIGHT, 100)
+    BP.set_motor_power(PORT_MOTOR_LEFT, SPEED)
+    BP.set_motor_power(PORT_MOTOR_RIGHT, SPEED)
     while go:
         go = stillGo()
         left = getDist("L")
         right = getDist("R")
-        if (left < minDist or right > maxDist):
-            steer("R",left)
-        elif(right < minDist or left > maxDist):
-            steer("L",right)
+        print(left, right)
+        if (left < minDist):
+            print("steering right")
+            steer("L",left)
+        elif(right < minDist):
+            print("steering left")
+            steer("R",right)
         else:
-            BP.set_motor_power(PORT_MOTOR_LEFT, 100)
-            BP.set_motor_power(PORT_MOTOR_RIGHT, 100)
+            BP.set_motor_power(PORT_MOTOR_LEFT, SPEED)
+            BP.set_motor_power(PORT_MOTOR_RIGHT, SPEED)
     sleep(2)
             
 def waitForStart():
