@@ -90,16 +90,27 @@ maxDist = idealDist * 1.5
 minDist = idealDist/1.5
 
 def steer(side, proximity):
-    #if at minDist or below, 50% steering
-    #if at midpoint between MaxDist & minDist, 0 % steering
-    midpoint = maxDist - ((maxDist - minDist)/2)
-    maxDiff = midpoint - minDist
-    actDiff = proximity - minDist
-    valOfSteer = (actDiff/maxDiff)
+    BP.set_motor_power(PORT_MOTOR_LEFT, 0)
+    BP.set_motor_power(PORT_MOTOR_RIGHT, 0)
+
     if(side == "R"):
-        BP.set_motor_power(PORT_MOTOR_LEFT, 100*valOfSteer)
+        BP.set_motor_power(PORT_MOTOR_LEFT, 100)
+        BP.set_motor_power(PORT_MOTOR_RIGHT, -100)
+        sleep(0.25)
+        BP.set_motor_power(PORT_MOTOR_LEFT, 100)
+        BP.set_motor_power(PORT_MOTOR_RIGHT, 100)
+        
+
     if(side == "L"):
-        BP.set_motor_power(PORT_MOTOR_RIGHT, 100*valOfSteer)
+        BP.set_motor_power(PORT_MOTOR_LEFT, -100)
+        BP.set_motor_power(PORT_MOTOR_RIGHT, 100)
+        sleep(0.25)
+        BP.set_motor_power(PORT_MOTOR_LEFT, 100)
+        BP.set_motor_power(PORT_MOTOR_RIGHT, 100)
+        
+
+        
+        
 
 def first():
     print("In 1")
