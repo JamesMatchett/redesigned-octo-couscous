@@ -1,4 +1,4 @@
-#canyons of mars
+#hubble2
 #drive to booping distance
 #turn
 #repeat
@@ -47,13 +47,22 @@ def getMotVal(mot):
     if mot == "L":
         return BP.get_motor_encoder(BP.PORT_A)   
 
-def turn90():
+def turn(deg):
     leftValOrig = getMotVal("L")
     rightValOrig = getMotVal("R")
-    leftValTarg = legtValOrig + 90
-    rightValTarg = rightValOrig + 90
-    while (leftValTarg > getMotVal("L") and rightValTarg > getMotVal("R"):
-           speed(velocity, -velocity)
+    
+    #Turning right
+    if (deg > 0):
+        leftValTarg = legtValOrig + deg
+        rightValTarg = rightValOrig - deg
+        while (leftValTarg > getMotVal("L") and rightValTarg < getMotVal("R"):
+               speed(velocity, -velocity)
+    if (deg < 0):
+            leftValTarg = legtValOrig - deg
+            rightValTarg = rightValOrig + deg
+            while (leftValTarg < getMotVal("L") and rightValTarg > getMotVal("R"):
+               speed(-velocity, velocity)
+               
     speed(0,0)
            
     
